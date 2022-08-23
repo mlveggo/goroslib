@@ -2,6 +2,7 @@ package xmlrpc
 
 import (
 	"context"
+	"io"
 	"net"
 	"net/http"
 	"testing"
@@ -99,6 +100,9 @@ func TestClientErrors(t *testing.T) {
 
 		hs := &http.Server{
 			Handler: http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+				_, err := io.ReadAll(req.Body)
+				require.NoError(t, err)
+
 				w.Write([]byte("invalid"))
 			}),
 		}
